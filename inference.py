@@ -23,7 +23,7 @@ def load_model(checkpoint_path):
     return model.to(DEVICE)
 
 # Predict 1 ảnh
-def predict(model, image_path):
+def predict(model, img_input):
     transform = transforms.Compose([
         transforms.Grayscale(num_output_channels=3),
         transforms.Resize((224, 224)),
@@ -31,7 +31,12 @@ def predict(model, image_path):
         transforms.Normalize([0.485, 0.456, 0.406],
                              [0.229, 0.224, 0.225]),
     ])
-    img = Image.open(image_path)
+    
+    if isinstance(img_input, str):
+        img = Image.open(img_input)
+    else:
+        img = img_input # Assuming it's already a PIL Image
+        
     tensor = transform(img).unsqueeze(0).to(DEVICE)
 
     with torch.no_grad():
